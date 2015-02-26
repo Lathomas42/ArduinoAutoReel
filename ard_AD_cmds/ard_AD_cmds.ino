@@ -4,6 +4,7 @@
 #define CS_PIN 10
 #define RESET_PIN 6
 #define BUSY_PIN 5
+#define DEBUG 1
 
 class AutoReel: public AutoDriver {
   private:
@@ -55,10 +56,16 @@ class AutoReel: public AutoDriver {
       setDecKVAL(k);
       setRunKVAL(k);
       setHoldKVAL(k);
-    }
+    };
+    
+    
+    
+    
+};
 
 
-AutoReel board = AutoReel(CS_PIN, RESET_PIN, BUSY_PIN);
+AutoReel reel = AutoReel(CS_PIN, RESET_PIN, BUSY_PIN);
+CmdMessenger cmdMessenger = CmdMessenger(Serial);
 
 enum
 {
@@ -79,6 +86,7 @@ enum
   kMove,            //13
   kCheckStatus, //14
 };
+
 void attachCommandCallbacks()
 {
   cmdMessenger.attach(kConfigure, config);
@@ -89,102 +97,108 @@ void attachCommandCallbacks()
   cmdMessenger.attach(kDeceleration, deceleration);
   cmdMessenger.attach(kAccK, accKVal);
   cmdMessenger.attach(kDecK, decKVal);
-  cmdMessenger.attach(kRunK, runKVal;
+  cmdMessenger.attach(kRunK, runKVal);
   cmdMessenger.attach(kHoldK, holdKVal);
   cmdMessenger.attach(kms, microStep);
   cmdMessenger.attach(kLowSpeed, low_speed);
   cmdMessenger.attach(kRotate, rotate);
   cmdMessenger.attach(kMove, moveSteps);
   cmdMessenger.attach(kCheckStatus, check);
-}
+};
 
 void config(){
-  board.configure();
-}
+  reel.configure();
+};
 
 void stop_cmd(){
   //pass 0 for soft 1 for hard
-  int soft = cmdMessenger.readBinArg();
+  int16_t soft = cmdMessenger.readBinArg<uint16_t>();
   if (soft == 0){
-    board.softStop();
+    reel.softStop();
   }
   else{
-    board.hardStop();
+    reel.hardStop();
   }
-}
+};
 
 void release(){
-  board.softHiZ();
+  reel.softHiZ();
 }
 
 void velocity(){
-  float vel = cmdMessenger.readBinArg();
-  board.setMaxSpeed(vel);
+  float vel = cmdMessenger.readBinArg<float>();
+  reel.setMaxSpeed(vel);
 }
 
 void acceleration(){
-  float acc = cmdMessenger.readBinArg();
-  board.setAcc(acc);
+  float acc = cmdMessenger.readBinArg<float>();
+  reel.setAcc(acc);
 }
 
 void deceleration(){
-  float dec = cmdMessenger.readBinArg();
-  board.setDec(dec);
+  float dec = cmdMessenger.readBinArg<float>();
+  reel.setDec(dec);
 }
 
 void accKVal(){
-  int k = cmdMessenger.readBinArg();
-  board.setAccKVAL(k);
+  int16_t k = cmdMessenger.readBinArg<int16_t>();
+  reel.setAccKVAL(k);
 }
 
 void decKVal(){
-  int k = cmdMessenger.readBinArg();
-  board.setDecKVAL(k);
+  int16_t k = cmdMessenger.readBinArg<int16_t>();
+  reel.setDecKVAL(k);
 }
 
 void runKVal(){
-  int k = cmdMessenger.readBinArg();
-  board.setRunKVAL(k);
+  int16_t k = cmdMessenger.readBinArg<int16_t>();
+  reel.setRunKVAL(k);
 }
 
 void holdKVal(){
-  int k = cmdMessenger.readBinArg();
-  board.setHoldKVAL(k);
+  int16_t k = cmdMessenger.readBinArg<int16_t>();
+  reel.setHoldKVAL(k);
 }
 
 void microStep(){
   // input can be 1, 2, 4, 8, .... , 128 microsteps per full step
-  int steps = cmdMessenger.readBinArg();
-  board.configStepMode(steps);
+  int16_t steps = cmdMessenger.readBinArg<int16_t>();
+  reel.configStepMode(steps);
 }
 
 void low_speed(){
   boolean low = cmdMessenger.readBoolArg();
-  board.setLoSpdOpt(low);
+  reel.setLoSpdOpt(low);
 }
 
 void rotate(){
   //byte direction, float steps_per_sec
-  int dir = cmdMessenger.readBinArg();
-  float sps = cmdMessenger.readBinArg();
-  board.run(dir, sps);
+  int16_t dir = cmdMessenger.readBinArg<int16_t>();
+  float sps = cmdMessenger.readBinArg<float>();
+  Serial.print(dir);
+  Serial.print(',');
+  Serial.println(sps);
+  reel.run(dir, sps);
 }
 
 void moveSteps(){
   //byte direction, long number of steps
-  int dir = cmdMessenger.readBinArg();
-  long steps = cmdMessenger.readBinArg();
-  board.move(dir, steps);
+  int16_t dir = cmdMessenger.readBinArg<int16_t>();
+  Serial.println(dir);
+  int16_t steps = cmdMessenger.readBinArg<int16_t>();
+  Serial.println(steps);
+  reel.move(dir, steps);
 }
 
 void check(){
   //returns 1 or 0 
-  cmdMessenger.sendBinCmd(kCheckStatus, board.checkStatus());
+  int a = cmdMessenger.sendBinCmd(kCheckStatus, reel.getStatus());
+  Serial.println(a);
 }
 
 void setup(){
   Serial.begin(9600);
-  board.configure();
+  reel.configure();
   cmdMessenger.printLfCr();
   attachCommandCallbacks();
 }
