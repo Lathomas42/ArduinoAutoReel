@@ -52,7 +52,15 @@ cmds = [
     'name': 'kMove',
     'params': ['bi16', 'bi32'],
   },
-  {'name': 'kCheckStatus'}]
+  {'name': 'kCheckStatus'},
+  {
+    'name': 'kValuePong',
+    'params': ['bi16', 'bi32', 'bf', 'bbool'],
+  },
+  {
+    'name': 'kTest',
+    'params': ['bi16', 'bi32', 'bf', 'bbool'],
+  }]
 
 class AutoReelMessenger():
     def __init__(self, port='COM4', rate=9600):
@@ -141,3 +149,5 @@ class AutoReelMessenger():
         
     def check(self):
         self.messenger.call('kCheckStatus')
+    def test(self):
+        self.messenger.call('kTest', 54321, 987654321, 12.0035, True)

@@ -196,6 +196,19 @@ void check(){
   Serial.println(a);
 }
 
+void test(){
+  cmdMessenger.sendCmdStart(kValuePong);
+  //Test Int_16 reading/sending
+  int16_t i_16 = cmdMessenger.readBinArg<int16_t>();
+  cmdMessenger.sendCmdBinArg(i_16);
+  //Test Float reading/sending
+  float flt = cmdMessenger.readBinArg<float>();
+  cmdMessenger.sendCmdBinArg(flt);
+  //test Bool reading/sending
+  bool boo = cmdMessenger.readBinArg<bool>();
+  cmdMessenger.sendCmdBinArg(boo);
+  sendCmdEnd();
+
 void setup(){
   Serial.begin(9600);
   reel.configure();
