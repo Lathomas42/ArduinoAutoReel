@@ -5,52 +5,52 @@ cmds = [
   {'name': 'kConfigure'},
   {
     'name': 'kStop',
-    'params': ['i16'],
+    'params': ['bi16'],
   },
   {'name': 'kRelease'},
   {
     'name': 'kVelocity',
-    'params':['f'],
+    'params':['bf'],
   },
   {
     'name': 'kAcceleration',
-    'params':['f'],
+    'params':['bf'],
   },
   {
     'name': 'kDeceleration',
-    'params': ['f'],
+    'params': ['bf'],
   },
   {
     'name': 'kAccK',
-    'params': ['i16'],
+    'params': ['bi16'],
   },
   {
     'name': 'kDecK',
-    'params': ['i16'],
+    'params': ['bi16'],
   },
   {
     'name': 'kRunK',
-    'params': ['i16'],
+    'params': ['bi16'],
   },
   {
     'name': 'kHoldK',
-    'params': ['i16'],
+    'params': ['bi16'],
   },
   {
     'name': 'kms',
-    'params': ['i16'],
+    'params': ['bi16'],
   },
   {
     'name': 'kLowSpeed',
-    'params': [bool],
+    'params': ['bBool'],
   },
   {
     'name': 'kRotate',
-    'params': ['i16', 'f'],
+    'params': ['bi16', 'bf'],
   },
   {
     'name': 'kMove',
-    'params': ['i16', 'i32'],
+    'params': ['bi16', 'bi32'],
   },
   {'name': 'kCheckStatus'}]
 
