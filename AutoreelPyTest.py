@@ -42,7 +42,7 @@ cmds = [
   },
   {
     'name': 'kLowSpeed',
-    'params': ['bBool'],
+    'params': ['bbool'],
   },
   {
     'name': 'kRotate',
